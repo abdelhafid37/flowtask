@@ -22,7 +22,12 @@ A full-stack MERN task management application that helps users organize and trac
 - `bcryptjs` for password hashing
 - `cors` for Cross-Origin Resource Sharing
 - `nodemon` for auto server restart
-- `dotenv` for environment variable loading
+- `dotenv` for environment variables loading
+
+```sh
+npm install express dotenv mongoose cors
+npm install --save-dev nodemon
+```
 
 ### Frontend
 
