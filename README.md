@@ -25,8 +25,11 @@ A full-stack MERN task management application that helps users organize and trac
 - `dotenv` for environment variables loading
 
 ```sh
+npm init -y
 npm install express dotenv mongoose cors
 npm install --save-dev nodemon
+npm install bcryptjs jsonwebtoken
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ### Frontend
