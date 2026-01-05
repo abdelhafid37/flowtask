@@ -2,12 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectToDB = require("./config/db");
+const authRouter = require("./routes/authRoutes");
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL || "*",
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -17,6 +18,8 @@ app.use(express.json());
 app.get("/", function (req, res) {
   res.send("Server is running...");
 });
+
+app.use("/api/auth", authRouter);
 
 (async function () {
   try {
