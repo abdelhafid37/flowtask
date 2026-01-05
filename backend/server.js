@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectToDB = require("./config/db");
-const authRouter = require("./routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.get("/", function (req, res) {
   res.send("Server is running...");
 });
 
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authRoutes);
 
 (async function () {
   try {
