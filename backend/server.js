@@ -3,13 +3,15 @@ const express = require("express");
 const cors = require("cors");
 const connectToDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/taskRoutes");
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "*",
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -20,13 +22,14 @@ app.get("/", function (req, res) {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
 
 (async function () {
   try {
     await connectToDB();
     console.log("Starting Server...");
-    app.listen(process.env.PORT, function () {
-      console.log("Server Running on Port", process.env.PORT);
+    app.listen(PORT, function () {
+      console.log("Server Running on Port", PORT);
     });
   } catch (error) {
     console.log("Server Failed to Start!");

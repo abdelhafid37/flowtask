@@ -38,7 +38,7 @@ async function createTask(req, res) {
 async function updateTask(req, res) {
   const { id } = req.user;
   const { title, description, status, dueDate } = req.body;
-  const { taskId } = req.params;
+  const { id: taskId } = req.params;
 
   let task;
   try {
@@ -72,8 +72,8 @@ async function updateTask(req, res) {
 }
 
 async function deleteTask(req, res) {
-  const { taskId } = req.params;
   const { id } = req.user;
+  const { id: taskId } = req.params;
 
   let task;
   try {
