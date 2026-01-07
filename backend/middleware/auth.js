@@ -2,21 +2,29 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 async function authMiddleware(req, res, next) {
-  const { Authorization } = req.headers;
+  const { authorization } = req.headers;
 
-  if (!Authorization)
-    return res.json(401).json({ error: "Request is not authorized" });
+  if (!authorization)
+    return res.status(401).json({ error: "request is not authorized" });
 
-  const token = Authorization.split(" ")[1];
+  if (!authorization.startsWith("Bearer "))
+    return res.status(401).json({ error: "invalid authorization format" });
 
-  const payload = jwt.verify(token, process.env.JWT_SECRET);
-  const { _id } = payload; // but why not id ?
+  const token = authorization.split(" ")[1];
 
-  const user = await User.findOne({ _id }).select("_id");
-  if (!user) return res.status(401).json({ error: "Authorization failed" });
+  try {
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
-  req.user = user;
-  next();
+    const user = await User.findOne({ _id: id }).select("_id");
+
+    if (!user) return res.status(401).json({ error: "authorization failed" });
+
+    req.user = { id: user._id };
+    next();
+  } catch (error) {
+    console.log("auth error:", error.message);
+    return res.status(401).json({ error: "authorization failed" });
+  }
 }
 
 module.exports = authMiddleware;

@@ -24,6 +24,7 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
   },
   {
