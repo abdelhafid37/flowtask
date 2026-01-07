@@ -38,6 +38,16 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 - `React Router` for navigation
 - `Axios` for API calls
 - `Tailwind` for styling
+- `shadcn` for components
+
+```sh
+npm create vite@latest
+npm install tailwindcss @tailwindcss/vite
+npx shadcn@latest init
+npm i react-router-dom
+npm i react-toastify
+npm i axios
+```
 
 ## Prerequisites
 
