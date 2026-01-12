@@ -1,18 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import useAuth from "@/hooks/useAuth";
@@ -24,21 +12,20 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login, loading } = useAuth();
+  const { loading, login } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (!email || !password) return setError("All fields are required!");
+    setError("");
+    if (!email || !password) return setError("all fields are required!");
 
     try {
-      setError("");
       await login(email, password);
-      toast("logged in successfully");
+      toast.success("login successfully.");
       navigate("/dashboard");
     } catch (error) {
-      setError("login failed, try again later!");
-      toast(error);
+      toast.error(error.response?.data?.error || "login failed, please try again later!");
     }
   }
 
@@ -48,9 +35,7 @@ export default function Login() {
         <Card>
           <CardHeader>
             <CardTitle>Login to your account</CardTitle>
-            <CardDescription>
-              Enter your email and password below to login to your account
-            </CardDescription>
+            <CardDescription>Enter your email and password below to login to your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit}>
@@ -84,8 +69,7 @@ export default function Login() {
                     <span>Login</span>
                   </Button>
                   <FieldDescription className="text-center">
-                    don&apos;t have an account?{" "}
-                    <Link to="/register">Sign up</Link>
+                    don&apos;t have an account? <Link to="/register">Sign up</Link>
                   </FieldDescription>
                   <FieldError>{error && <p>{error}</p>}</FieldError>
                 </Field>

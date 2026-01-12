@@ -1,18 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import useAuth from "@/hooks/useAuth";
@@ -32,19 +20,23 @@ export default function Register() {
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
-    if (!username || !email || !password)
-      return setError("All fields are required!");
-    if (password.length < 6) return setError("Weak password!");
-    if (password !== confirmPassword)
-      return setError("Password don't matches!");
+
+    const USERNAME_REGEXP = new RegExp("^[A-Za-z_][A-Za-z0-9_]{2,19}$");
+    const EMAIL_REGEXP = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+    const PASSWORD_REGEXP = /^.{8,}$/;
+
+    if (!username || !email || !password || !confirmPassword) return setError("all fields are required!");
+    if (!USERNAME_REGEXP.test(username)) return setError("please enter a valid username!");
+    if (!EMAIL_REGEXP.test(email)) return setError("please enter a valid email!");
+    if (!PASSWORD_REGEXP.test(password)) return setError("weak password!");
+    if (password !== confirmPassword) return setError("password don't match!");
 
     try {
-      await register(email, password);
-      toast.success("account created successfully");
+      await register(username, email, password);
+      toast.success("account created successfully!");
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
-      toast.error("account creation failed, try again later!");
+      toast.error(error.response?.data?.error || "account creation failed, please try again later!");
     }
   }
 
@@ -54,9 +46,7 @@ export default function Register() {
         <Card>
           <CardHeader>
             <CardTitle>Create an account</CardTitle>
-            <CardDescription>
-              Enter your information below to create your account
-            </CardDescription>
+            <CardDescription>Enter your information below to create your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit}>
@@ -97,9 +87,7 @@ export default function Register() {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="confirmPassword">
-                    Confirm Password
-                  </FieldLabel>
+                  <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
                   <Input
                     type="password"
                     id="confirmPassword"
