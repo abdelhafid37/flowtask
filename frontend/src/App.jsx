@@ -1,17 +1,18 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthProvider from "./context/AuthContext";
 import Login from "./pages/Login";
-import { ToastContainer } from "react-toastify";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Toaster position="top-center" richColors={true} invert={false} theme="light" />
         <Navbar />
-        <ToastContainer theme="colored" position="top-center" />
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -19,7 +20,7 @@ function App() {
             path="/dashboard"
             element={
               <PrivateRoute>
-                <div>dashboard</div>
+                <Dashboard />
               </PrivateRoute>
             }
           />

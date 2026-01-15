@@ -6,7 +6,7 @@ import { Spinner } from "@/components/ui/spinner";
 import useAuth from "@/hooks/useAuth";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export default function Login() {
   const [email, setEmail] = useState("");
