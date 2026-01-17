@@ -1,16 +1,15 @@
 import { getLocalToken } from "@/lib/storage";
 import clientAPI from "./api";
 
-const token = getLocalToken();
-const Authorization = `Bearer ${token}`;
+function authHeaders() {
+  const token = getLocalToken();
+  return { Authorization: `Bearer ${token}` };
+}
 
 export async function getTasks() {
   try {
     const response = await clientAPI.get("/tasks", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization,
-      },
+      headers: authHeaders(),
     });
     const tasks = response.data;
     return tasks;
@@ -21,12 +20,7 @@ export async function getTasks() {
 }
 export async function createTask(data) {
   try {
-    const response = await clientAPI.post("/tasks", {
-      headers: {
-        Authorization,
-        body: data,
-      },
-    });
+    const response = await clientAPI.post("/tasks", data, { headers: authHeaders() });
     const task = response.data;
     return task;
   } catch (error) {
@@ -36,12 +30,7 @@ export async function createTask(data) {
 }
 export async function updateTask(id, data) {
   try {
-    const response = await clientAPI.put(`/tasks/${id}`, {
-      headers: {
-        Authorization,
-        body: data,
-      },
-    });
+    const response = await clientAPI.put(`/tasks/${id}`, data, { headers: authHeaders() });
     const task = response.data;
     return task;
   } catch (error) {
@@ -51,11 +40,7 @@ export async function updateTask(id, data) {
 }
 export async function deleteTask(id) {
   try {
-    const response = await clientAPI.delete(`/tasks/${id}`, {
-      headers: {
-        Authorization,
-      },
-    });
+    const response = await clientAPI.delete(`/tasks/${id}`, { headers: authHeaders() });
     const task = response.data;
     return task;
   } catch (error) {

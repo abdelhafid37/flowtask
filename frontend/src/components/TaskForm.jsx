@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -8,7 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Field, FieldGroup, FieldLabel } from "./ui/field";
+
+import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -17,83 +18,50 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-
 export default function TaskForm(props) {
-  const { task, open, setOpen } = props;
-  const [title, setTitle] = useState(task?.title || "");
-  const [description, setDescription] = useState(task?.description || "");
-  const [status, setStatus] = useState(task?.status || "pending");
-  const [dueDate, setDueDate] = useState(task?.dueDate || "");
+  const { task, open, onOpenChange, onSubmit, error } = props;
 
-  if (task) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <form onSubmit={null}>
-            <DialogHeader>
-              <DialogTitle>Edit Task</DialogTitle>
-              <DialogDescription>Update the fields you want to edit</DialogDescription>
-            </DialogHeader>
-            <FieldGroup className="my-6">
-              <Field>
-                <FieldLabel htmlFor="title">Title</FieldLabel>
-                <Input
-                  id="title"
-                  type="text"
-                  placeholder="Edit task title"
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
-                  required
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="description">Description</FieldLabel>
-                <Textarea
-                  id="description"
-                  placeholder="Edit task description"
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                />
-              </Field>
-              <Field>
-                <FieldLabel>Status</FieldLabel>
-                <Select value={status} onValueChange={(value) => setStatus(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Change status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="in-progress">In Progress</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel>Due Date</FieldLabel>
-                <DatePicker date={dueDate} setDate={setDueDate} />
-              </Field>
-            </FieldGroup>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="ghost">Cancel</Button>
-              </DialogClose>
-              <Button>Save</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("pending");
+  const [dueDate, setDueDate] = useState(new Date());
+
+  useEffect(() => {
+    if (!open) return;
+    if (task) {
+      const { title, description, status, dueDate } = task;
+      setTitle(title);
+      setDescription(description);
+      setStatus(status);
+      setDueDate(new Date(dueDate));
+    } else {
+      setTitle("");
+      setDescription("");
+      setStatus("pending");
+      setDueDate(new Date());
+    }
+  }, [open]);
+
+  const isEditMode = Boolean(task);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <form onSubmit={null}>
+        <form
+          onSubmit={(event) =>
+            onSubmit(event, {
+              title,
+              description,
+              status,
+              dueDate,
+            })
+          }
+        >
           <DialogHeader>
-            <DialogTitle>Create Task</DialogTitle>
-            <DialogDescription>Fill up the fields below to create new task.</DialogDescription>
+            <DialogTitle>{isEditMode ? "Edit Task" : "Create Task"}</DialogTitle>
+            <DialogDescription>
+              {isEditMode ? "Update the fields you want to edit." : "Fill up the fields below to create new task."}
+            </DialogDescription>
           </DialogHeader>
           <FieldGroup className="my-6">
             <Field>
@@ -101,17 +69,17 @@ export default function TaskForm(props) {
               <Input
                 id="title"
                 type="text"
-                placeholder="Enter task title"
+                placeholder={isEditMode ? "Edit task title" : "Enter task title"}
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
-                required
               />
+              {error && <FieldError>{error}</FieldError>}
             </Field>
             <Field>
               <FieldLabel htmlFor="description">Description</FieldLabel>
               <Textarea
                 id="description"
-                placeholder="Enter task description"
+                placeholder={isEditMode ? "Edit task description" : "Enter task description"}
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
               />
@@ -120,7 +88,7 @@ export default function TaskForm(props) {
               <FieldLabel>Status</FieldLabel>
               <Select value={status} onValueChange={(value) => setStatus(value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
+                  <SelectValue placeholder={isEditMode ? "Change status" : "Select a status"} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -151,6 +119,9 @@ export default function TaskForm(props) {
 function DatePicker({ date = undefined, setDate }) {
   const [open, setOpen] = useState(false);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild data-empty={!date} className="data-[empty=true]:text-muted-foreground">
@@ -167,6 +138,7 @@ function DatePicker({ date = undefined, setDate }) {
             setDate(date);
             setOpen(false);
           }}
+          disabled={{ before: today }}
         />
       </PopoverContent>
     </Popover>

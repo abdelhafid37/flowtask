@@ -1,9 +1,8 @@
-import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
-import { formatDistanceToNow, formatISO, isPast } from "date-fns";
+import { formatDistanceToNow, isPast } from "date-fns";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,21 +16,21 @@ import {
 } from "./ui/alert-dialog";
 import { normalizeStatus, statusStyle } from "@/lib/task";
 
-export default function TaskItem({ task, onEdit, onDelete }) {
+export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete }) {
   const { title, description, status, dueDate } = task;
-  const due = formatISO(dueDate);
-  const dateIndecator = formatDistanceToNow(dueDate, { addSuffix: true });
-  const isOverDue = isPast(due);
+
+  const dateIndecator = formatDistanceToNow(new Date(dueDate), { addSuffix: true });
+  const isOverDue = isPast(new Date(dueDate));
 
   return (
     <Card className="flex flex-col justify-between">
       <CardContent className="flex flex-col gap-3">
         <CardTitle>
           <p className={`text-xs ${isOverDue ? "text-red-500" : "text-inherit"}`}>{dateIndecator}</p>
-          <h3 className="text-lg font-bold capitalize mb-1">{title}</h3>
+          <h3 className="text-lg font-bold mb-1">{title}</h3>
         </CardTitle>
         <CardDescription>
-          <p>{description}</p>
+          <p className="wrap-anywhere">{description}</p>
         </CardDescription>
       </CardContent>
       <CardFooter>
@@ -40,7 +39,14 @@ export default function TaskItem({ task, onEdit, onDelete }) {
             <Badge className={`capitalize ${statusStyle(status)}`}>{normalizeStatus(status)}</Badge>
           </div>
           <div className="flex items-center justify-center gap-3">
-            <Button variant="ghost" size="icon-sm" onClick={onEdit}>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => {
+                setIsOpen(true);
+                setSelectedTask(task);
+              }}
+            >
               <EditIcon />
             </Button>
             <AlertDialog>
@@ -52,13 +58,13 @@ export default function TaskItem({ task, onEdit, onDelete }) {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure you want to delete this task</AlertDialogTitle>
-                  <AlertDialogDescription>
+                  <AlertDialogDescription className="max-w-[40ch]">
                     This action can not be undone, this will permanently delete the chosen task.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+                  <AlertDialogAction onClick={() => onDelete(task._id)}>Delete</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
