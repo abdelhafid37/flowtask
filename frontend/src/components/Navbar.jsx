@@ -2,7 +2,6 @@ import useAuth from "@/hooks/useAuth";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -16,9 +15,9 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 w-full bg-accent">
       <div className="container mx-auto">
-        <div className="flex items-center justify-between p-4 md:px-6">
+        <div className="flex items-center justify-between py-4 px-10 md:px-6">
           <Link to="/dashboard" className="font-bold">
-            <Badge className="bg-neutral-500">Flowtask</Badge>
+            Flowtask
           </Link>
           <ul className="flex items-center justify-center gap-6">
             {user && (

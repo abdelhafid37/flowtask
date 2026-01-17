@@ -1,8 +1,11 @@
 import TaskForm from "@/components/TaskForm";
 import TaskList from "@/components/TaskList";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createTask, deleteTask, getTasks, updateTask } from "@/services/taskService";
-import React, { useEffect, useState } from "react";
+import { PlusIcon } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -11,6 +14,7 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [selectedTask, setSelectedTask] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     (async function () {
@@ -65,27 +69,70 @@ export default function Dashboard() {
     }
   }
 
+  useEffect(() => {
+    if (isOpen) setError("");
+  }, [isOpen]);
+
+  const visibleTasks = useMemo(() => {
+    if (filter === "all") return tasks;
+    return tasks.filter((task) => task.status === filter);
+  }, [filter, tasks]);
+
   return (
-    <div className="container mx-auto p-4 md:p-6">
+    <div className="container mx-auto py-4 px-10 md:px-6">
       <div className="flex items-center justify-between gap-6 w-full">
-        <h2 className="text-2xl font-semibold">Tasks</h2>
+        <h2 className="">Tasks</h2>
         <Button
           onClick={() => {
-            setIsOpen(true);
             setSelectedTask(null);
+            setIsOpen(true);
           }}
         >
-          Create Task
+          <PlusIcon className="md:hidden size-5" />
+          <span className="hidden md:block">Create Task</span>
         </Button>
         <TaskForm error={error} task={selectedTask} open={isOpen} onOpenChange={setIsOpen} onSubmit={onSubmit} />
+      </div>
+      <div className="flex justify-end md:justify-start mt-4">
+        <Tabs defaultValue="all">
+          <TabsList>
+            <TabsTrigger value="all" className="transition-colors duration-150" onClick={() => setFilter("all")}>
+              All
+            </TabsTrigger>
+            <TabsTrigger
+              value="pending"
+              className="transition-colors duration-150 data-[state=active]:bg-gray-500 data-[state=active]:text-white"
+              onClick={() => setFilter("pending")}
+            >
+              Pending
+            </TabsTrigger>
+            <TabsTrigger
+              value="in-progress"
+              className="transition-colors duration-150 data-[state=active]:bg-yellow-500 data-[state=active]:text-white"
+              onClick={() => setFilter("in-progress")}
+            >
+              In Progress
+            </TabsTrigger>
+            <TabsTrigger
+              value="completed"
+              className="transition-colors duration-150 data-[state=active]:bg-green-500 data-[state=active]:text-white"
+              onClick={() => setFilter("completed")}
+            >
+              Completed
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
       <div>
         {loading ? (
           <div className="min-h-svh w-full flex items-center justify-center">
-            <span>Loading...</span>
+            <div className="">
+              <Spinner />
+              <span>Loading...</span>
+            </div>
           </div>
         ) : (
-          <TaskList tasks={tasks} setIsOpen={setIsOpen} setSelectedTask={setSelectedTask} onDelete={onDelete} />
+          <TaskList tasks={visibleTasks} setIsOpen={setIsOpen} setSelectedTask={setSelectedTask} onDelete={onDelete} />
         )}
       </div>
     </div>

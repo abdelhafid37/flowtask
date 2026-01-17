@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
@@ -23,7 +23,7 @@ export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete })
   const isOverDue = isPast(new Date(dueDate));
 
   return (
-    <Card className="flex flex-col justify-between">
+    <Card className="flex flex-col justify-between bg-muted">
       <CardContent className="flex flex-col gap-3">
         <CardTitle>
           <p className={`text-xs ${isOverDue ? "text-red-500" : "text-inherit"}`}>{dateIndecator}</p>
@@ -43,8 +43,8 @@ export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete })
               variant="ghost"
               size="icon-sm"
               onClick={() => {
-                setIsOpen(true);
                 setSelectedTask(task);
+                setIsOpen(true);
               }}
             >
               <EditIcon />
