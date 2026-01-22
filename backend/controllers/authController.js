@@ -7,17 +7,20 @@ function genToken(id) {
   });
 }
 
-async function register(req, res) {
+async function register(req, res, next) {
   const { username, email, password } = req.body;
 
-  const isExist = await User.findOne({ $or: [{ username }, { email }] });
-  if (isExist)
-    return res
-      .status(409)
-      .json({ error: "username or email is already taken" });
-
   try {
+    const isExist = await User.findOne({ $or: [{ username }, { email }] });
+
+    if (isExist) {
+      const error = new Error("Username or email is already taken");
+      error.statusCode = 409;
+      throw error;
+    }
+
     const user = await User.create({ username, email, password });
+
     const token = genToken(user._id);
     res.status(201).json({
       token,
@@ -27,24 +30,32 @@ async function register(req, res) {
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ error: "invalid data" });
+    next(error);
   }
 }
 
-async function login(req, res) {
+async function login(req, res, next) {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(401).json({ error: "invalid email or password" });
+
+    if (!user) {
+      const error = new Error("Invalid email or password");
+      error.statusCode = 401;
+      throw error;
+    }
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch)
-      return res.status(401).json({ error: "invalid email or password" });
+
+    if (!isMatch) {
+      const error = new Error("Invalid email or password");
+      error.statusCode = 401;
+      throw error;
+    }
 
     const token = genToken(user._id);
+
     res.status(200).json({
       token,
       user: {
@@ -53,8 +64,7 @@ async function login(req, res) {
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Server Error" });
+    next(error);
   }
 }
 

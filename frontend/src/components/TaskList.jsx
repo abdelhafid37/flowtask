@@ -7,9 +7,9 @@ export default function TaskList(props) {
 
   if (tasks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-6 w-full min-h-svh">
+      <div className="flex flex-col items-center justify-center gap-6 w-full py-36">
         <PencilLine />
-        <span>No tasks yet, try create your first task.</span>
+        <span>No tasks here, try create your first task.</span>
       </div>
     );
   }

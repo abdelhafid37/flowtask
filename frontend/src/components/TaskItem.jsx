@@ -26,7 +26,7 @@ export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete })
     <Card className="flex flex-col justify-between bg-muted">
       <CardContent className="flex flex-col gap-3">
         <CardTitle>
-          <p className={`text-xs ${isOverDue ? "text-red-500" : "text-inherit"}`}>{dateIndecator}</p>
+          <p className={`text-xs ${isOverDue ? "line-through opacity-50" : "text-inherit"}`}>{dateIndecator}</p>
           <h3 className="text-lg font-bold mb-1">{title}</h3>
         </CardTitle>
         <CardDescription>
@@ -34,7 +34,7 @@ export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete })
         </CardDescription>
       </CardContent>
       <CardFooter>
-        <div className="flex items-end justify-between gap-6 w-full">
+        <div className="flex items-center justify-between gap-6 w-full">
           <div className="">
             <Badge className={`capitalize ${statusStyle(status)}`}>{normalizeStatus(status)}</Badge>
           </div>

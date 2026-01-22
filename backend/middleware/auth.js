@@ -4,11 +4,9 @@ const User = require("../models/User");
 async function authMiddleware(req, res, next) {
   const { authorization } = req.headers;
 
-  if (!authorization)
-    return res.status(401).json({ error: "request is not authorized" });
+  if (!authorization) return res.status(401).json({ error: "request is not authorized" });
 
-  if (!authorization.startsWith("Bearer "))
-    return res.status(401).json({ error: "invalid authorization format" });
+  if (!authorization.startsWith("Bearer ")) return res.status(401).json({ error: "invalid authorization format" });
 
   const token = authorization.split(" ")[1];
 

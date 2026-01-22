@@ -4,14 +4,14 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
 import { Toaster } from "./components/ui/sonner";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Toaster position="top-center" richColors={true} invert={false} theme="light" />
+        <Toaster richColors={true} invert={false} theme="light" />
         <Navbar />
         <Routes>
           <Route path="/" element={<Login />} />

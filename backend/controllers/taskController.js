@@ -1,24 +1,31 @@
 const Task = require("../models/Task");
 
-async function getTasks(req, res) {
+async function getTasks(req, res, next) {
   const { id } = req.user;
 
   try {
     const task = await Task.find({ user: id });
     res.status(200).json(task);
   } catch (error) {
-    console.log("get all task error:", error.message);
-    res.status(500).json({ error: "unexpected error occur" });
+    next(error);
   }
 }
 
-async function createTask(req, res) {
+async function createTask(req, res, next) {
   const { id } = req.user;
   const { title, description, status, dueDate } = req.body;
 
-  if (!title) return res.status(400).json({ error: "title required" });
-  if (dueDate && isNaN(new Date(dueDate).getTime()))
-    return res.status(400).json({ error: "invalid date" });
+  if (!title) {
+    const error = new Error("Title required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (dueDate && isNaN(new Date(dueDate).getTime())) {
+    const error = new Error("Invalid date");
+    error.statusCode = 400;
+    throw error;
+  }
 
   try {
     const task = await Task.create({
@@ -28,32 +35,43 @@ async function createTask(req, res) {
       dueDate,
       user: id,
     });
+
     res.status(201).json(task);
   } catch (error) {
-    console.log("create task error:", error.message);
-    res.status(500).json({ error: "unexpected error occur" });
+    next(error);
   }
 }
 
-async function updateTask(req, res) {
+async function updateTask(req, res, next) {
   const { id } = req.user;
   const { title, description, status, dueDate } = req.body;
   const { id: taskId } = req.params;
 
   let task;
+
   try {
     task = await Task.findById(taskId);
-    if (!task) return res.status(404).json({ error: "task not found" });
+
+    if (!task) {
+      const error = new Error("Task not found");
+      error.statusCode = 404;
+      throw error;
+    }
   } catch (error) {
-    return res.status(400).json({ error: "invalid task id" });
+    return next(error);
   }
 
   try {
     const belongsToUser = task.user.equals(id);
-    if (!belongsToUser)
-      return res.status(403).json({ error: "forbidden request" });
+
+    if (!belongsToUser) {
+      const error = new Error("Forbidden request");
+      error.statusCode = 403;
+      throw error;
+    }
 
     const { _id } = task;
+
     const updatedTask = await Task.findByIdAndUpdate(
       _id,
       {
@@ -62,38 +80,47 @@ async function updateTask(req, res) {
         status,
         dueDate,
       },
-      { new: true }
+      { new: true },
     );
+
     res.status(200).json(updatedTask);
   } catch (error) {
-    console.log("update task error:", error.message);
-    res.status(500).json({ error: "unexpected error occur" });
+    next(error);
   }
 }
 
-async function deleteTask(req, res) {
+async function deleteTask(req, res, next) {
   const { id } = req.user;
   const { id: taskId } = req.params;
 
   let task;
   try {
     task = await Task.findById(taskId);
-    if (!task) return res.status(404).json({ error: "task not found" });
+
+    if (!task) {
+      const error = new Error("Task not found");
+      error.statusCode = 404;
+      throw error;
+    }
   } catch (error) {
-    return res.status(400).json({ error: "invalid task id" });
+    return next(error);
   }
 
   const belongsToUser = task.user.equals(id);
-  if (!belongsToUser)
-    return res.status(403).json({ error: "forbidden request" });
+
+  if (!belongsToUser) {
+    const error = new Error("Forbidden request");
+    error.statusCode = 403;
+    throw error;
+  }
 
   try {
     const { _id } = task;
     const deletedTask = await Task.findByIdAndDelete(_id);
+
     res.status(200).json(deletedTask);
   } catch (error) {
-    console.log("delete task error:", error.message);
-    res.status(500).json({ error: "unexpected error occur" });
+    next(error);
   }
 }
 

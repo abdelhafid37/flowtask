@@ -5,7 +5,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createTask, deleteTask, getTasks, updateTask } from "@/services/taskService";
 import { PlusIcon } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -125,11 +125,9 @@ export default function Dashboard() {
       </div>
       <div>
         {loading ? (
-          <div className="min-h-svh w-full flex items-center justify-center">
-            <div className="">
-              <Spinner />
-              <span>Loading...</span>
-            </div>
+          <div className="flex flex-col items-center justify-center gap-6 w-full py-36 text-neutral-500">
+            <Spinner className="size-12" />
+            <span>Loading...</span>
           </div>
         ) : (
           <TaskList tasks={visibleTasks} setIsOpen={setIsOpen} setSelectedTask={setSelectedTask} onDelete={onDelete} />
