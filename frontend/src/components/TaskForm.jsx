@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-
 import { Field, FieldError, FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -18,8 +17,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { Spinner } from "./ui/spinner";
+
 export default function TaskForm(props) {
-  const { task, open, onOpenChange, onSubmit, error } = props;
+  const { task, open, onOpenChange, onSubmit, error, submitting } = props;
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -108,7 +109,16 @@ export default function TaskForm(props) {
             <DialogClose asChild>
               <Button variant="ghost">Cancel</Button>
             </DialogClose>
-            <Button>Save</Button>
+            <Button disabled={submitting}>
+              {submitting ? (
+                <>
+                  <Spinner />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                "save"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

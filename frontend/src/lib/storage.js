@@ -16,10 +16,7 @@ export function saveUserLocaly(user) {
   localStorage.setItem("user", JSON.stringify(user));
 }
 
-export function clearLocalToken() {
-  localStorage.removeItem("token");
-}
-
-export function clearLocalUser() {
-  localStorage.removeItem("user");
+export function clearLocal(value) {
+  if (typeof value !== "string") return;
+  localStorage.removeItem(value);
 }

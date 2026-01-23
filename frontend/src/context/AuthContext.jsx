@@ -1,13 +1,7 @@
-import {
-  clearLocalToken,
-  clearLocalUser,
-  getLocalToken,
-  getLocalUser,
-  saveTokenLocaly,
-  saveUserLocaly,
-} from "@/lib/storage";
+import { getLocalToken, getLocalUser, saveTokenLocaly, saveUserLocaly } from "@/lib/storage";
 import clientAPI from "@/services/api";
 import { createContext, useEffect, useState } from "react";
+import { logout as logoutHelper } from "@/lib/auth";
 
 export const AuthContext = createContext(null);
 
@@ -38,7 +32,6 @@ export default function AuthProvider({ children }) {
       setToken(_token);
       setIsAuthenticated(true);
     } catch (error) {
-      console.log(error.message);
       throw error;
     } finally {
       setLoading(false);
@@ -46,8 +39,7 @@ export default function AuthProvider({ children }) {
   }
 
   function logout() {
-    clearLocalToken();
-    clearLocalUser();
+    logoutHelper();
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
@@ -68,7 +60,6 @@ export default function AuthProvider({ children }) {
       setToken(_token);
       setIsAuthenticated(true);
     } catch (error) {
-      console.log(error.message);
       throw error;
     } finally {
       setLoading(false);

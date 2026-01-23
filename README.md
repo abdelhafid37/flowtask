@@ -1,4 +1,4 @@
-# FlowTask
+# Taskflow
 
 A full-stack MERN task management application that helps users organize and track their tasks efficiently.
 
@@ -62,8 +62,8 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/abdelhafid37/flowtask.git
-cd flowtask
+git clone https://github.com/abdelhafid37/taskflow.git
+cd taskflow
 ```
 
 ### 2. Backend Setup
@@ -79,7 +79,7 @@ Create a `.env` file in the `backend` directory:
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 JWT_EXPIRE=your_jwt_expire_time
-PORT=5000
+PORT=5001
 NODE_ENV=development
 CLIENT_URL=your_client_url
 ```
@@ -100,7 +100,7 @@ npm install
 Create a `.env` file in the `frontend` directory:
 
 ```env
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_API_URL=http://localhost:5001/api
 ```
 
 Start the React app:
@@ -109,7 +109,7 @@ Start the React app:
 npm start
 ```
 
-The application will open at `http://localhost:3000`
+The application will open at `http://localhost:5173`
 
 ## Usage
 
@@ -122,7 +122,7 @@ The application will open at `http://localhost:3000`
 ## Project Structure
 
 ```
-flowtask/
+taskflow/
 ├── backend/                # Backend
 │   ├── config/            # Configuration files
 │   ├── controllers/       # Request handlers
@@ -138,23 +138,26 @@ flowtask/
 │       ├── pages/        # Page components
 │       ├── services/     # API services
 │       ├── context/      # Context providers
+│       ├── hooks/      # Hooks providers
+│       ├── lib/      # Helper functions
 │       └── App.jsx       # Main component
 │
+├── .getignore
 └── README.md
 ```
 
 ## API Documentation
 
-See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for detailed API endpoint documentation.
+See [API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) for detailed API endpoint documentation.
 
 ## Contributing
 
 Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b branchName`)
+3. Commit your changes (`git commit -m 'commitMessage'`)
+4. Push to the branch (`git push origin branchName`)
 5. Open a Pull Request
 
 ## License
@@ -170,7 +173,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Abdelhafid - [@abdelhafid](https://instagram.com/abdelhafid.el.houari)
 
-Project Link: [https://github.com/abdelhafid37/flowtask](https://github.com/abdelhafid37/flowtask)
+Project Link: [https://github.com/abdelhafid37/taskflow](https://github.com/abdelhafid37/taskflow)
 
 ---
 

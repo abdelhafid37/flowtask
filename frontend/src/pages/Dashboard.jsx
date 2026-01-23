@@ -1,11 +1,11 @@
+import Loader from "@/components/Loader";
 import TaskForm from "@/components/TaskForm";
 import TaskList from "@/components/TaskList";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createTask, deleteTask, getTasks, updateTask } from "@/services/taskService";
 import { PlusIcon } from "lucide-react";
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     (async function () {
@@ -24,7 +25,6 @@ export default function Dashboard() {
         setTasks(allTasks);
       } catch (error) {
         toast.error(error.response?.data?.error || "Error getting all tasks!");
-        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -36,36 +36,43 @@ export default function Dashboard() {
 
     if (!data.title) return setError("Title field required");
 
+    setSubmitting(true);
+
     if (selectedTask) {
       try {
         const updatedTask = await updateTask(selectedTask._id, data);
         setTasks((tasks) => tasks.map((task) => (task._id === updatedTask._id ? updatedTask : task)));
         toast.success("Task updated successfully");
+        setIsOpen(false);
       } catch (error) {
         toast.error(error.response?.data?.error || "Error updating task");
       } finally {
-        setIsOpen(false);
+        setSubmitting(false);
       }
     } else {
       try {
         const task = await createTask(data);
         toast.success("Task created successfully");
         setTasks([...tasks, task]);
+        setIsOpen(false);
       } catch (error) {
         toast.error(error.response?.data?.error || "Error creating task");
       } finally {
-        setIsOpen(false);
+        setSubmitting(false);
       }
     }
   }
 
   async function onDelete(id) {
+    setSubmitting(true);
     try {
       const deletedTask = await deleteTask(id);
       setTasks((prev) => prev.filter((task) => task._id !== deletedTask._id));
       toast.success("Task deleted successfully");
     } catch (error) {
       toast.error(error.response?.data?.error || "Error deleting task");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -81,7 +88,7 @@ export default function Dashboard() {
   return (
     <div className="container mx-auto py-4 px-10 md:px-6">
       <div className="flex items-center justify-between gap-6 w-full">
-        <h2 className="">Tasks</h2>
+        <h2 className="font-bold text-sm">Dashboard</h2>
         <Button
           onClick={() => {
             setSelectedTask(null);
@@ -91,7 +98,14 @@ export default function Dashboard() {
           <PlusIcon className="md:hidden size-5" />
           <span className="hidden md:block">Create Task</span>
         </Button>
-        <TaskForm error={error} task={selectedTask} open={isOpen} onOpenChange={setIsOpen} onSubmit={onSubmit} />
+        <TaskForm
+          error={error}
+          task={selectedTask}
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          onSubmit={onSubmit}
+          submitting={submitting}
+        />
       </div>
       <div className="flex justify-end md:justify-start mt-4">
         <Tabs defaultValue="all">
@@ -125,12 +139,15 @@ export default function Dashboard() {
       </div>
       <div>
         {loading ? (
-          <div className="flex flex-col items-center justify-center gap-6 w-full py-36 text-neutral-500">
-            <Spinner className="size-12" />
-            <span>Loading...</span>
-          </div>
+          <Loader />
         ) : (
-          <TaskList tasks={visibleTasks} setIsOpen={setIsOpen} setSelectedTask={setSelectedTask} onDelete={onDelete} />
+          <TaskList
+            tasks={visibleTasks}
+            setIsOpen={setIsOpen}
+            setSelectedTask={setSelectedTask}
+            onDelete={onDelete}
+            submitting={submitting}
+          />
         )}
       </div>
     </div>

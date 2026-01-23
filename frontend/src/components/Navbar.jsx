@@ -16,8 +16,8 @@ export default function Navbar() {
     <header className="sticky top-0 w-full bg-accent">
       <div className="container mx-auto">
         <div className="flex items-center justify-between py-4 px-10 md:px-6">
-          <Link to="/dashboard" className="font-bold">
-            Flowtask
+          <Link to="/dashboard" className="font-black">
+            Taskflow
           </Link>
           <ul className="flex items-center justify-center gap-6">
             {user && (

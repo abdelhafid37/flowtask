@@ -3,7 +3,7 @@ import React from "react";
 import TaskItem from "./TaskItem";
 
 export default function TaskList(props) {
-  const { tasks, setIsOpen, setSelectedTask, onDelete } = props;
+  const { tasks, setIsOpen, setSelectedTask, onDelete, submitting } = props;
 
   if (tasks.length === 0) {
     return (
@@ -24,6 +24,7 @@ export default function TaskList(props) {
             setIsOpen={setIsOpen}
             setSelectedTask={setSelectedTask}
             onDelete={onDelete}
+            submitting={submitting}
           />
         );
       })}

@@ -14,7 +14,6 @@ export async function getTasks() {
     const tasks = response.data;
     return tasks;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -24,7 +23,6 @@ export async function createTask(data) {
     const task = response.data;
     return task;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -34,7 +32,6 @@ export async function updateTask(id, data) {
     const task = response.data;
     return task;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -44,7 +41,6 @@ export async function deleteTask(id) {
     const task = response.data;
     return task;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

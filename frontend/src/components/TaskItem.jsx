@@ -15,8 +15,9 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { normalizeStatus, statusStyle } from "@/lib/task";
+import { Spinner } from "./ui/spinner";
 
-export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete }) {
+export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete, submitting }) {
   const { title, description, status, dueDate } = task;
 
   const dateIndecator = formatDistanceToNow(new Date(dueDate), { addSuffix: true });
@@ -64,7 +65,16 @@ export default function TaskItem({ task, setIsOpen, setSelectedTask, onDelete })
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDelete(task._id)}>Delete</AlertDialogAction>
+                  <AlertDialogAction onClick={() => onDelete(task._id)} disabled={submitting}>
+                    {submitting ? (
+                      <>
+                        <Spinner />
+                        <span>Deleting...</span>
+                      </>
+                    ) : (
+                      "Delete"
+                    )}
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

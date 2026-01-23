@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectToDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,8 @@ app.get("/", function (req, res) {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+
+app.use(errorHandler);
 
 (async function () {
   try {

@@ -1,8 +1,8 @@
-# FlowTask - Project Specification
+# Taskflow - Project Specification
 
 ## Project Overview
 
-FlowTask is a full-stack MERN (MongoDB, Express, React, Node.js) task management application that allows users to register, authenticate, and manage their personal tasks with full CRUD operations.
+Taskflow is a full-stack MERN (MongoDB, Express, React, Node.js) task management application that allows users to register, authenticate, and manage their personal tasks with full CRUD operations.
 
 ## Core Features
 
